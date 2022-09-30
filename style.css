@@ -37,16 +37,16 @@ body {
   font-size: 40px;
 }
 
-.board {
+#game-board {
   margin-top: 50px;
   display: grid;
   grid-template-areas:
-    "1 2 3"
-    "4 5 6"
-    "7 8 9";
+    "0 1 2"
+    "3 4 5"
+    "6 7 8";
 }
 
-.grid {
+.box {
   width: var(--cell-size);
   height: var(--cell-size);
   border: 2px solid black;
@@ -59,7 +59,7 @@ body {
   align-items: center;
 }
 
-.grid:hover {
+.box:hover {
   background-color: #e0e0e0;
   cursor: pointer;
 }
@@ -69,8 +69,7 @@ body {
 .grid:nth-child(3) {
   border-top: none;
 } */
-
-.restart-btn {
+#restart-btn {
   background-color: #1565c0;
   color: #ffffff;
 
@@ -81,6 +80,6 @@ body {
   cursor: pointer;
 }
 
-.restart-btn:hover {
+#restart-btn:hover {
   background-color: #003c8f;
 }
