@@ -1,5 +1,6 @@
 const playerO = "O";
 const playerX = "X";
+let gameOver = false;
 let currentTurn = playerX;
 let board = ["", "", "", "", "", "", "", "", ""];
 
@@ -19,35 +20,56 @@ function boxMarked(e) {
     e.target.innerText = currentTurn;
     console.log(board);
 
+    checkWinner();
+    updateMessage();
+
     if (currentTurn == playerX) {
       currentTurn = playerO;
     } else currentTurn = playerX;
   }
-  updateMessage();
 }
 
 function restart() {
   boxes.forEach((box) => (box.innerText = ""));
-  currentTurn = playerX;
   board.fill("");
+
+  currentTurn = playerX;
+  gameOver = false;
+
+  window.location.reload();
 }
 
 function updateMessage() {
-  if (currentTurn == playerX) {
-    message.innerText = "Player X's turn";
-  } else message.innerText = "Player O's turn";
+  if (gameOver) {
+    message.innerText = `Player ${currentTurn} has won`;
+  } else message.innerText = `Player ${currentTurn}'s turn`;
 }
 
-// const checkWinner = (fieldIndex) => {
-//   const winConditions = [
-//     [0, 1, 2],
-//     [3, 4, 5],
-//     [6, 7, 8],
-//     [0, 3, 6],
-//     [1, 4, 7],
-//     [2, 5, 8],
-//     [0, 4, 8],
-//     [2, 4, 6],
-//   ];
+const winCombos = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
+
+function checkWinner() {
+  for (const winCondition of winCombos) {
+    let [a, b, c] = winCondition;
+    if (board[a] && board[a] == board[b] && board[a] == board[c]) {
+      return (gameOver = true), disableGame();
+    }
+  }
+}
+
+function disableGame() {
+  if (gameOver) {
+    board.fill(null);
+    console.log(board);
+  }
+}
 
 startGame();
