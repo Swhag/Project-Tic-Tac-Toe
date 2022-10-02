@@ -1,8 +1,6 @@
 "use strict";
 
 const player = (mark) => {
-  this.mark = mark;
-
   const getMark = () => {
     return mark;
   };
@@ -17,8 +15,7 @@ const gameBoard = (() => {
 
   const reset = () => {
     board.fill("");
-
-    // window.location.reload();
+    location.reload();
   };
   return { board, reset };
 })();
@@ -43,6 +40,8 @@ const gameController = (() => {
       checkWinner();
       updateMessage();
       getCurrentTurn();
+      console.log(round);
+      console.log(gameOver);
     }
   };
 
@@ -50,12 +49,6 @@ const gameController = (() => {
     if (!gameOver && round <= 9) {
       round++;
     }
-  };
-
-  const getCurrentTurn = function () {
-    if (currentTurn == playerX.getMark()) {
-      currentTurn = playerO.getMark();
-    } else currentTurn = playerX.getMark();
   };
 
   const winCombos = [
@@ -82,12 +75,16 @@ const gameController = (() => {
     }
   };
 
-  const updateMessage = () => {
-    // console.log(round);
-    // console.log(gameOver);
+  const getCurrentTurn = function () {
+    if (currentTurn == playerX.getMark()) {
+      currentTurn = playerO.getMark();
+    } else currentTurn = playerX.getMark();
+  };
 
+  const updateMessage = () => {
     if (round >= 9) {
       message.innerText = "It's a draw!";
+      gameOver = true;
     } else if (gameOver) {
       message.innerText = `Player ${currentTurn} has won`;
     } else message.innerText = `Player ${currentTurn}'s turn`;
@@ -113,15 +110,12 @@ const displayController = (() => {
   const restart_btn = document.getElementById("restart-btn");
   const boxes = Array.from(document.querySelectorAll(".box"));
 
-  boxes.forEach((box) =>
-    box.addEventListener("mousedown", gameController.markBox)
-  );
-  restart_btn.onmousedown = () => (
-    gameBoard.reset(),
-    gameController.reset(),
-    gameController.updateMessage(),
-    reset()
-  );
+  boxes.forEach((box) => box.addEventListener("click", gameController.markBox));
+
+  restart_btn.addEventListener("click", () => {
+    reset();
+    gameBoard.reset(), gameController.reset(), gameController.updateMessage();
+  });
 
   const reset = () => {
     boxes.forEach((box) => (box.innerText = ""));
