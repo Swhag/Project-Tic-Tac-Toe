@@ -46,8 +46,6 @@ function restart() {
   currentTurn = playerX;
   gameOver = false;
   round = 0;
-
-  window.location.reload();
 }
 
 function updateMessage() {

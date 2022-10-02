@@ -1,85 +1,129 @@
-const playerO = "O";
-const playerX = "X";
+"use strict";
 
-let gameOver = false;
-let currentTurn = playerX;
-let board = ["", "", "", "", "", "", "", "", ""];
-let round = 0;
+const player = (mark) => {
+  this.mark = mark;
 
-const restart_btn = document.getElementById("restart-btn");
-const boxes = Array.from(document.querySelectorAll(".box"));
-const message = document.getElementById("message");
+  const getMark = () => {
+    return mark;
+  };
 
-const startGame = () => {
-  boxes.forEach((box) => box.addEventListener("mousedown", boxMarked));
-  restart_btn.addEventListener("mousedown", restart);
+  return { getMark };
 };
 
-function countRound() {
-  if (!gameOver && round < 9) {
-    round++;
-    console.log(round);
-    console.log(gameOver);
-  }
-}
+// ----------------------------------------------
 
-function boxMarked(e) {
-  const i = e.target.id;
-  if (board[i] == "") {
-    board[i] = currentTurn;
-    e.target.innerText = currentTurn;
+const gameBoard = (() => {
+  const board = ["", "", "", "", "", "", "", "", ""];
 
-    countRound();
-    checkWinner();
-    updateMessage();
+  const reset = () => {
+    board.fill("");
 
-    if (currentTurn == playerX) {
-      currentTurn = playerO;
-    } else currentTurn = playerX;
-  }
-}
+    // window.location.reload();
+  };
+  return { board, reset };
+})();
 
-function restart() {
-  boxes.forEach((box) => (box.innerText = ""));
-  board.fill("");
+// ----------------------------------------------
 
-  currentTurn = playerX;
-  gameOver = false;
-  round = 0;
+const gameController = (() => {
+  const playerX = player("X");
+  const playerO = player("O");
 
-  window.location.reload();
-}
+  let round = 0;
+  let gameOver = false;
+  let currentTurn = playerX.getMark();
 
-function updateMessage() {
-  if (round >= 9) {
-    message.innerText = "It's a draw!";
-  } else if (gameOver) {
-    message.innerText = `Player ${currentTurn} has won`;
-  } else message.innerText = `Player ${currentTurn}'s turn`;
-}
+  const markBox = (e) => {
+    const i = e.target.id;
+    if (gameBoard.board[i] == "") {
+      gameBoard.board[i] = currentTurn;
+      e.target.innerText = currentTurn;
 
-const winCombos = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6],
-];
-
-function checkWinner() {
-  for (const winCondition of winCombos) {
-    let [a, b, c] = winCondition;
-    if (board[a] && board[a] == board[b] && board[a] == board[c]) {
-      return (gameOver = true), disableGame();
+      countRound();
+      checkWinner();
+      updateMessage();
+      getCurrentTurn();
     }
-  }
-}
+  };
 
-function disableGame() {
-  board.fill(null);
-}
+  const countRound = () => {
+    if (!gameOver && round <= 9) {
+      round++;
+    }
+  };
 
-startGame();
+  const getCurrentTurn = function () {
+    if (currentTurn == playerX.getMark()) {
+      currentTurn = playerO.getMark();
+    } else currentTurn = playerX.getMark();
+  };
+
+  const winCombos = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  const checkWinner = () => {
+    for (const winCondition of winCombos) {
+      let [a, b, c] = winCondition;
+      if (
+        gameBoard.board[a] &&
+        gameBoard.board[a] == gameBoard.board[b] &&
+        gameBoard.board[a] == gameBoard.board[c]
+      ) {
+        return (gameOver = true), disableGame();
+      }
+    }
+  };
+
+  const updateMessage = () => {
+    // console.log(round);
+    // console.log(gameOver);
+
+    if (round >= 9) {
+      message.innerText = "It's a draw!";
+    } else if (gameOver) {
+      message.innerText = `Player ${currentTurn} has won`;
+    } else message.innerText = `Player ${currentTurn}'s turn`;
+  };
+
+  const disableGame = () => {
+    gameBoard.board.fill(null);
+  };
+
+  const reset = () => {
+    currentTurn = playerX.getMark();
+    gameOver = false;
+    round = 0;
+  };
+
+  return { markBox, reset, updateMessage };
+})();
+
+// ----------------------------------------------
+
+const displayController = (() => {
+  const message = document.getElementById("message");
+  const restart_btn = document.getElementById("restart-btn");
+  const boxes = Array.from(document.querySelectorAll(".box"));
+
+  boxes.forEach((box) =>
+    box.addEventListener("mousedown", gameController.markBox)
+  );
+  restart_btn.onmousedown = () => (
+    gameBoard.reset(),
+    gameController.reset(),
+    gameController.updateMessage(),
+    reset()
+  );
+
+  const reset = () => {
+    boxes.forEach((box) => (box.innerText = ""));
+  };
+})();
