@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const player = (mark) => {
   const getMark = () => {
@@ -11,10 +11,10 @@ const player = (mark) => {
 // ----------------------------------------------
 
 const gameBoard = (() => {
-  const board = ["", "", "", "", "", "", "", "", ""];
+  const board = ['', '', '', '', '', '', '', '', ''];
 
   const reset = () => {
-    board.fill("");
+    board.fill('');
     location.reload();
   };
   return { board, reset };
@@ -23,8 +23,8 @@ const gameBoard = (() => {
 // ----------------------------------------------
 
 const gameController = (() => {
-  const playerX = player("X");
-  const playerO = player("O");
+  const playerX = player('X');
+  const playerO = player('O');
 
   let round = 0;
   let gameOver = false;
@@ -32,7 +32,7 @@ const gameController = (() => {
 
   const markBox = (e) => {
     const i = e.target.id;
-    if (gameBoard.board[i] == "") {
+    if (gameBoard.board[i] == '') {
       gameBoard.board[i] = currentTurn;
       e.target.innerText = currentTurn;
 
@@ -106,18 +106,18 @@ const gameController = (() => {
 // ----------------------------------------------
 
 const displayController = (() => {
-  const message = document.getElementById("message");
-  const restart_btn = document.getElementById("restart-btn");
-  const boxes = Array.from(document.querySelectorAll(".box"));
+  const message = document.getElementById('message');
+  const restart_btn = document.getElementById('restart-btn');
+  const boxes = Array.from(document.querySelectorAll('.box'));
 
-  boxes.forEach((box) => box.addEventListener("click", gameController.markBox));
+  boxes.forEach((box) => box.addEventListener('click', gameController.markBox));
 
-  restart_btn.addEventListener("click", () => {
+  restart_btn.addEventListener('click', () => {
     reset();
     gameBoard.reset(), gameController.reset(), gameController.updateMessage();
   });
 
   const reset = () => {
-    boxes.forEach((box) => (box.innerText = ""));
+    boxes.forEach((box) => (box.innerText = ''));
   };
 })();
